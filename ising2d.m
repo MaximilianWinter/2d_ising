@@ -1,6 +1,8 @@
+function ising2d(T, B)
+
 %define constants
 kB = 1;
-T = 3;
+%T = 3;
 beta = 1/(kB*T);
 
 %make 100x100 lattice with random spins (+-1)
@@ -8,7 +10,7 @@ s = randi([0,1],100);
 s(s==0)=-1;
 figure(1)
 h=pcolor(s);
-energy_list = [totenergy(s)];
+energy_list = [totenergy(s,B)];
 for n = 1:100000
     
     i = randi(100,1);
@@ -16,7 +18,7 @@ for n = 1:100000
     
     s(i,j) = -s(i,j);
     
-    deltaE = totenergy(s) - energy_list(end);
+    deltaE = totenergy(s,B) - energy_list(end);
     
     if rand() < exp(-beta*deltaE)
         energy_list(end+1) = deltaE+energy_list(end);
@@ -42,3 +44,4 @@ h=pcolor(s);
 % open(vidObj);
 % writeVideo(vidObj, Frames);
 % close(vidObj);
+end
