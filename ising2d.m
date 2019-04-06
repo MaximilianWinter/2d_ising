@@ -1,4 +1,4 @@
-function [S_f, energy] = ising2d(B, T)
+function [S_f, energy] = ising2d(B, T, Tcrit)
 
 %define constants
 kB = 1;
@@ -7,21 +7,24 @@ beta = 1/(kB*T);
 %make quadratic lattice of gridsize; either with random spins (+-1) or all
 %spins aligned
 gridsize = 50;
-s = ones(gridsize);
-%s = randi([0,1], gridsize);
-s(s==0)=-1;
+if T < Tcrit
+    s = ones(gridsize);
+else
+    s = randi([0,1], gridsize);
+    s(s==0)=-1;
+end
 
 
 
-% figure(1)
-% h=pcolor(s);
-% title('B = ' + string(B) + ', T = ' + string(T));
+figure(4)
+h=pcolor(s);
+title('B = ' + string(B) + ', T = ' + string(T));
 
 
 
 
 S_i = s;
-steps = 150000;
+steps = 1500000;
 energy_list = zeros(steps+1,1);
 energy_list(1) = [totenergy(s,B)];
 for n = 1:steps %think about this condition
@@ -46,6 +49,7 @@ for n = 1:steps %think about this condition
         slope = abs((energy_list(n)-energy_list(n-999))/200);
         if slope < 1e-3
             break;
+            %continue;
         end
     end
 end
@@ -55,9 +59,11 @@ end
 %steps=1:(n+1);
 %plot(steps,energy_list);
 %title('B = ' + string(B) + ', T = ' + string(T));
-% figure(3)
-% h=pcolor(s);
-% title('B = ' + string(B) + ', T = ' + string(T));
+f = figure(5);
+h=pcolor(s);
+titlestring = 'B = ' + string(B) + ', T = ' + string(T);
+title(titlestring);
+%saveas(f, titlestring + '.png');
 S_f = s;
 energy = energy_list;
 
